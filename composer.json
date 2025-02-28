@@ -1,0 +1,17 @@
+{
+    "name": "rafaelscouto/desafio-revvo",
+    "description": "Projeto para o desafio Revvo",
+    "type": "project",
+    "license": "GPL-2.0-or-later",
+    "autoload": {
+        "psr-4": {
+            "Rafaelscouto\\DesafioRevvo\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Rafael Couto"
+        }
+    ],
+    "require": {}
+}
