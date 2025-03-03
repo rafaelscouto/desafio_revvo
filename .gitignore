@@ -2,3 +2,5 @@
 .htaccess
 node_modules/
 vendor/
+uploads/
+gulpfile.js
