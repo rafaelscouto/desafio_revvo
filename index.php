@@ -18,6 +18,8 @@ $router = new Router();
 $router->get('/', 'HomeController@index');
 $router->get('/404', 'HomeController@notfound');
 
+$router->get('/cursos/search', 'CursoController@search');
+
 $router->get('/cursos', 'CursoController@index');
 $router->get('/cursos/create', 'CursoController@create');
 $router->post('/cursos/store', 'CursoController@store');
@@ -25,14 +27,6 @@ $router->get('/cursos/{id}', 'CursoController@show');
 $router->get('/cursos/{id}/edit', 'CursoController@edit');
 $router->post('/cursos/{id}/update', 'CursoController@update');
 $router->post('/cursos/{id}/delete', 'CursoController@delete');
-
-$router->get('/slides', 'SlideshowController@index');
-$router->get('/slides/create', 'SlideshowController@create');
-$router->post('/slides/store', 'SlideshowController@store');
-$router->get('/slides/{id}', 'SlideshowController@show');
-$router->get('/slides/{id}/edit', 'SlideshowController@edit');
-$router->post('/slides/{id}/update', 'SlideshowController@update');
-$router->post('/slides/{id}/delete', 'SlideshowController@delete');
 
 $router->run();
 

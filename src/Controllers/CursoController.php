@@ -20,8 +20,18 @@ class CursoController
      */
     public function index(): void
     {
-        $data = $this->model->getAll() ?? [];
-        !empty($data) ? View::render('cursos/index', $data) : View::render('layouts/content-not-found');
+        $page = $_GET['page'] ?? 1;
+        $limit = 5;
+
+        $totalItems = $this->model->countAllItems() ?? '';
+        $totalPages = !empty($totalItems) ? ceil($totalItems / $limit) : $page;
+
+        $data = $this->model->getAll($limit, false, $page) ?? [];
+        !empty($data) ? View::render('cursos/index', [
+            'data' => $data,
+            'totalPages' => $totalPages,
+            'currentPage' => $page
+        ]) : View::render('layouts/content-not-found');
     }
 
     /**
@@ -133,5 +143,26 @@ class CursoController
         $_SESSION['error'] = "Erro ao deletar curso.";
         header('Location: ' . BASE_URL . 'cursos');
         exit;
+    }
+
+    /**
+     * Exibe a página de busca dos itens
+     */
+    public function search(): void
+    {
+        $query = htmlspecialchars(trim($_GET['s'])) ?? '';
+        $page = $_GET['page'] ?? 1;
+        $limit = 5;
+
+        $totalItems = $this->model->countAllItemsSearch($query) ?? '';
+        $totalPages = !empty($totalItems) ? ceil($totalItems / $limit) : $page;
+
+        $data = !empty($query) ? $this->model->search($query, $limit, $page) : [];
+        
+        !empty($data) ? View::render('cursos/search', [
+            'data' => $data,
+            'totalPages' => $totalPages,
+            'currentPage' => $page
+        ]) : View::render('layouts/content-not-found');
     }
 }

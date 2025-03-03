@@ -15,20 +15,18 @@ class Curso
         $this->pdo = Database::getInstance();
     }
 
-    public function getAll(int $limit = null, bool $is_featured = false): array
+    public function getAll(int $limit = 10, bool $is_featured = false, int $page = 1): array
     {
         try {
-            $query = "SELECT * FROM cursos";
+            $offset = ($page - 1) * $limit;
 
-            if($is_featured) $query .= " WHERE is_featured = 0";
-
-            $query .= " ORDER BY created_at DESC";
-
-            if($limit) $query .= " LIMIT :limit";
-
-            $stmt = $this->pdo->prepare($query);
-
-            if ($limit) $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
+            $sql = "SELECT * FROM cursos";
+            if($is_featured) $sql .= " WHERE is_featured = 0";
+            $sql .= " ORDER BY created_at DESC LIMIT :limit OFFSET :offset";
+            $stmt = $this->pdo->prepare($sql);
+            
+            $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
+            $stmt->bindValue(':offset', $offset, \PDO::PARAM_INT);
 
             $stmt->execute();
             return $stmt->fetchAll();
@@ -87,5 +85,51 @@ class Curso
     {
         $stmt = $this->pdo->prepare("DELETE FROM cursos WHERE id = ?");
         return $stmt->execute([$id]);
+    }
+
+    public function search(string $query, int $limit = 5, int $page = 1): array
+    {
+        try {
+            $offset = ($page - 1) * $limit;
+
+            $sql = "SELECT * FROM cursos WHERE title LIKE :title_query OR content LIKE :content_query ORDER BY created_at DESC LIMIT :limit OFFSET :offset";
+            $stmt = $this->pdo->prepare($sql);
+
+            $stmt->bindValue(':title_query', '%' . $query . '%', PDO::PARAM_STR);
+            $stmt->bindValue(':content_query', '%' . $query . '%', PDO::PARAM_STR);
+            $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+            $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll();
+        } catch(PDOException $e) {
+            error_log("Erro ao buscar curso: " . $e->getMessage());
+            return null;
+        }
+    }
+
+    public function countAllItems(): int
+    {
+        try {
+            $sql = "SELECT COUNT(*) as total FROM cursos";
+            return $this->pdo->query($sql)->fetch()['total'];
+        } catch(PDOException $e) {
+            error_log("Erro ao buscar curso: " . $e->getMessage());
+            return null;
+        }
+    }
+
+    public function countAllItemsSearch(string $query): int
+    {
+        try {
+            $sql = "SELECT COUNT(*) as total FROM cursos WHERE title LIKE :title_query OR content LIKE :content_query";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindValue(':title_query', '%' . $query . '%', PDO::PARAM_STR);
+            $stmt->bindValue(':content_query', '%' . $query . '%', PDO::PARAM_STR);
+            $stmt->execute();
+            return $stmt->fetch()['total'];
+        } catch(PDOException $e) {
+            error_log("Erro ao buscar curso: " . $e->getMessage());
+            return null;
+        }
     }
 }
