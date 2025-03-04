@@ -1,0 +1,17 @@
+@use "sass:color";
+
+$rc-body-color: #efefef;
+$rc-primary-color: #01a02a;
+$rc-primary-color-hover: color.adjust($rc-primary-color, $lightness: -10%);
+$rc-title-color: #545454;
+$rc-title-color-hover: color.adjust($rc-title-color, $lightness: -10%);
+$rc-subtitle-color: #919191;
+$rc-subtitle-color-hover: color.adjust($rc-subtitle-color, $lightness: -10%);
+$rc-text-color: #252525;
+$rc-divider-color: #dddddd;
+$rc-footer-color: #e5e0e2;
+$rc-border-btn-create-color: #9b9b9b;
+$rc-close-icon-color: #ff9179;
+$rc-close-icon-color-hover: color.adjust($rc-close-icon-color, $lightness: -10%);
+$rc-btn-act-color: #1da2da;
+$rc-btn-act-color-hover: color.adjust($rc-btn-act-color, $lightness: -10%);
